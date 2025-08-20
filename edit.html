@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Acme Payment Solutions Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+        header, footer { background: #003366; color: #fff; padding: 20px; text-align: center; }
+        main { max-width: 700px; margin: 30px auto; background: #fff; padding: 30px 20px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        label { display: block; margin-top: 20px; font-weight: bold; }
+        input[type="text"], input[type="email"], textarea { width: 100%; padding: 8px; margin-top: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { min-height: 60px; }
+        ul { padding-left: 20px; }
+        .list-edit { margin-bottom: 10px; }
+        .list-edit input { width: 90%; display: inline-block; }
+        .list-edit button { margin-left: 5px; }
+        .section-group { margin-bottom: 30px; }
+        button[type="submit"], .add-btn { background: #003366; color: #fff; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        .add-btn { padding: 4px 10px; font-size: 0.9em; margin-top: 0; }
+        @media (max-width: 600px) {
+            main { padding: 10px 2vw; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Edit Acme Payment Solutions Page</h1>
+    </header>
+    <main>
+        <form id="editForm">
+            <div class="section-group">
+                <label for="about">About Us</label>
+                <textarea id="about" name="about"></textarea>
+            </div>
+            <div class="section-group">
+                <label>Our Services</label>
+                <div id="services-list"></div>
+                <button type="button" class="add-btn" onclick="addListItem('services')">+ Add Service</button>
+            </div>
+            <div class="section-group">
+                <label for="expertise">Industry Expertise</label>
+                <textarea id="expertise" name="expertise"></textarea>
+            </div>
+            <div class="section-group">
+                <label>Case Studies</label>
+                <div id="case-studies-list"></div>
+                <button type="button" class="add-btn" onclick="addListItem('case-studies')">+ Add Case Study</button>
+            </div>
+            <div class="section-group">
+                <label for="technologies">Technologies</label>
+                <textarea id="technologies" name="technologies"></textarea>
+            </div>
+            <div class="section-group">
+                <label for="testimonial">Testimonial</label>
+                <textarea id="testimonial" name="testimonial"></textarea>
+            </div>
+            <div class="section-group">
+                <label for="contact-email">Contact Email</label>
+                <input type="email" id="contact-email" name="contact-email">
+                <label for="contact-phone" style="margin-top:10px;">Contact Phone</label>
+                <input type="text" id="contact-phone" name="contact-phone">
+            </div>
+            <button type="submit">Save Changes</button>
+        </form>
+    </main>
+    <footer>
+        &copy; 2024 Acme Payment Solutions. All rights reserved.
+    </footer>
+    <script>
+        // Default data (should match your Index.html)
+        const defaultData = {
+            about: "Acme Payment Solutions is a leading software outsourcing company specializing in payment industry solutions. With over 10 years of experience, we deliver secure and scalable payment platforms for clients worldwide.",
+            services: [
+                "Custom Payment Gateway Development",
+                "PCI DSS Compliance Consulting",
+                "Mobile Payment App Development",
+                "Integration with Third-party Payment Providers",
+                "Maintenance & Support"
+            ],
+            expertise: "We have deep expertise in digital payments, e-commerce, fintech, and banking sectors, helping clients streamline their payment processes and ensure regulatory compliance.",
+            caseStudies: [
+                "Developed a cross-border payment platform for a European fintech startup.",
+                "Integrated mobile wallets for a leading e-commerce retailer."
+            ],
+            technologies: "Our team is proficient in Java, .NET, Node.js, React, AWS, Azure, and blockchain technologies for secure payment solutions.",
+            testimonial: "\"Acme Payment Solutions delivered our payment gateway on time and exceeded our expectations.\" – John Doe, CEO, FinPay",
+            contactEmail: "info@acmepayments.com",
+            contactPhone: "+1 234 567 8900"
+        };
+
+        // Load data from localStorage or use default
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('acmePageData')) || defaultData;
+            document.getElementById('about').value = data.about;
+            document.getElementById('expertise').value = data.expertise;
+            document.getElementById('technologies').value = data.technologies;
+            document.getElementById('testimonial').value = data.testimonial;
+            document.getElementById('contact-email').value = data.contactEmail;
+            document.getElementById('contact-phone').value = data.contactPhone;
+            renderList('services', data.services);
+            renderList('case-studies', data.caseStudies);
+        }
+
+        // Render editable list
+        function renderList(type, items) {
+            const container = document.getElementById(type + '-list');
+            container.innerHTML = '';
+            items.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'list-edit';
+                div.innerHTML = `
+                    <input type="text" value="${item.replace(/"/g, '&quot;')}" data-idx="${idx}" />
+                    <button type="button" onclick="removeListItem('${type}', ${idx})">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Add new list item
+        function addListItem(type) {
+            const container = document.getElementById(type + '-list');
+            const idx = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'list-edit';
+            div.innerHTML = `
+                <input type="text" value="" data-idx="${idx}" />
+                <button type="button" onclick="removeListItem('${type}', ${idx})">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Remove list item
+        function removeListItem(type, idx) {
+            const container = document.getElementById(type + '-list');
+            container.removeChild(container.children[idx]);
+            // Re-index remaining items
+            Array.from(container.children).forEach((div, i) => {
+                div.querySelector('input').setAttribute('data-idx', i);
+                div.querySelector('button').setAttribute('onclick', `removeListItem('${type}', ${i})`);
+            });
+        }
+
+        // Gather form data
+        function gatherData() {
+            const services = Array.from(document.querySelectorAll('#services-list input')).map(i => i.value.trim()).filter(Boolean);
+            const caseStudies = Array.from(document.querySelectorAll('#case-studies-list input')).map(i => i.value.trim()).filter(Boolean);
+            return {
+                about: document.getElementById('about').value.trim(),
+                services,
+                expertise: document.getElementById('expertise').value.trim(),
+                caseStudies,
+                technologies: document.getElementById('technologies').value.trim(),
+                testimonial: document.getElementById('testimonial').value.trim(),
+                contactEmail: document.getElementById('contact-email').value.trim(),
+                contactPhone: document.getElementById('contact-phone').value.trim()
+            };
+        }
+
+        // Save data to localStorage
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = gatherData();
+            localStorage.setItem('acmePageData', JSON.stringify(data));
+            alert('Changes saved! Open the main page to see updates.');
+        });
+
+        // On load
+        loadData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Acme Payment Solutions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        section { padding: 40px 20px; border-bottom: 1px solid #eee; }
+        header, footer { background: #003366; color: #fff; padding: 20px; text-align: center; }
+        h1, h2 { color: #003366; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Acme Payment Solutions</h1>
+        <p>Your trusted partner in payment software outsourcing</p>
+    </header>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p id="about-text"></p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <ul id="services-list"></ul>
+    </section>
+
+    <section id="expertise">
+        <h2>Industry Expertise</h2>
+        <p id="expertise-text"></p>
+    </section>
+
+    <section id="case-studies">
+        <h2>Case Studies</h2>
+        <ul id="case-studies-list"></ul>
+    </section>
+
+    <section id="technologies">
+        <h2>Technologies</h2>
+        <p id="technologies-text"></p>
+    </section>
+
+    <section id="testimonials">
+        <h2>Testimonials</h2>
+        <blockquote id="testimonial-text"></blockquote>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p id="contact-info"></p>
+        <form>
+            <input type="text" placeholder="Your Name" required><br>
+            <input type="email" placeholder="Your Email" required><br>
+            <textarea placeholder="Your Message" required></textarea><br>
+            <button type="submit">Send</button>
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2024 Acme Payment Solutions. All rights reserved.
+    </footer>
+    <script>
+        // Default data (should match your edit page)
+        const defaultData = {
+            about: "Acme Payment Solutions is a leading software outsourcing company specializing in payment industry solutions. With over 10 years of experience, we deliver secure and scalable payment platforms for clients worldwide.",
+            services: [
+                "Custom Payment Gateway Development",
+                "PCI DSS Compliance Consulting",
+                "Mobile Payment App Development",
+                "Integration with Third-party Payment Providers",
+                "Maintenance & Support"
+            ],
+            expertise: "We have deep expertise in digital payments, e-commerce, fintech, and banking sectors, helping clients streamline their payment processes and ensure regulatory compliance.",
+            caseStudies: [
+                "Developed a cross-border payment platform for a European fintech startup.",
+                "Integrated mobile wallets for a leading e-commerce retailer."
+            ],
+            technologies: "Our team is proficient in Java, .NET, Node.js, React, AWS, Azure, and blockchain technologies for secure payment solutions.",
+            testimonial: "\"Acme Payment Solutions delivered our payment gateway on time and exceeded our expectations.\" – John Doe, CEO, FinPay",
+            contactEmail: "info@acmepayments.com",
+            contactPhone: "+1 234 567 8900"
+        };
+
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('acmePageData')) || defaultData;
+            document.getElementById('about-text').textContent = data.about;
+            // Services
+            const servicesList = document.getElementById('services-list');
+            servicesList.innerHTML = '';
+            data.services.forEach(service => {
+                const li = document.createElement('li');
+                li.textContent = service;
+                servicesList.appendChild(li);
+            });
+            // Expertise
+            document.getElementById('expertise-text').textContent = data.expertise;
+            // Case Studies
+            const caseStudiesList = document.getElementById('case-studies-list');
+            caseStudiesList.innerHTML = '';
+            data.caseStudies.forEach(cs => {
+                const li = document.createElement('li');
+                li.textContent = cs;
+                caseStudiesList.appendChild(li);
+            });
+            // Technologies
+            document.getElementById('technologies-text').textContent = data.technologies;
+            // Testimonial
+            document.getElementById('testimonial-text').textContent = data.testimonial;
+            // Contact
+            document.getElementById('contact-info').innerHTML = `Email: ${data.contactEmail}<br>Phone: ${data.contactPhone}`;
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
