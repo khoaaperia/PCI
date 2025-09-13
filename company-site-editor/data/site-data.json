@@ -1,16 +1,8 @@
 {
-  "services": [
-    "Custom Payment Gateway Development",
-    "PCI DSS Compliance Consulting",
-    "Mobile Payment App Development",
-    "Integration with DDD Payment Providers",
-    "Maintenance & Support"
-  ],
+  "about": "This the the Kapp Tech",
+  "services": [],
   "expertise": "We have deep expertise in digital payments, e-commerce, fintech, and banking sectors, helping clients streamline their payment processes and ensure regulatory compliance.",
-  "caseStudies": [
-    "Developed a cross-border payment platform for a European fintech startup.",
-    "Integrated mobile wallets for a leading e-commerce retailer."
-  ],
+  "caseStudies": [],
   "technologies": "Our team is proficient in Java, .NET, Node.js, React, AWS, Azure, and blockchain technologies for secure payment solutions.",
   "testimonials": [
     {
@@ -20,6 +12,6 @@
   ],
   "contact": {
     "email": "info@acmepayments.com",
-    "phone": "+1 234 567 8900"
+    "phone": "11223344"
   }
 }

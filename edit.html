@@ -68,105 +68,51 @@
         &copy; 2024 Acme Payment Solutions. All rights reserved.
     </footer>
     <script>
-        // Default data (should match your Index.html)
-        const defaultData = {
-            about: "Acme Payment Solutions is a leading software outsourcing company specializing in payment industry solutions. With over 10 years of experience, we deliver secure and scalable payment platforms for clients worldwide.",
-            services: [
-                "Custom Payment Gateway Development",
-                "PCI DSS Compliance Consulting",
-                "Mobile Payment App Development",
-                "Integration with Third-party Payment Providers",
-                "Maintenance & Support"
-            ],
-            expertise: "We have deep expertise in digital payments, e-commerce, fintech, and banking sectors, helping clients streamline their payment processes and ensure regulatory compliance.",
-            caseStudies: [
-                "Developed a cross-border payment platform for a European fintech startup.",
-                "Integrated mobile wallets for a leading e-commerce retailer."
-            ],
-            technologies: "Our team is proficient in Java, .NET, Node.js, React, AWS, Azure, and blockchain technologies for secure payment solutions.",
-            testimonial: "\"Acme Payment Solutions delivered our payment gateway on time and exceeded our expectations.\" – John Doe, CEO, FinPay",
-            contactEmail: "info@acmepayments.com",
-            contactPhone: "+1 234 567 8900"
-        };
+async function loadData() {
+    const res = await fetch('/api/data');
+    const data = await res.json();
+    document.getElementById('about').value = data.about || '';
+    document.getElementById('expertise').value = data.expertise || '';
+    document.getElementById('technologies').value = data.technologies || '';
+    document.getElementById('testimonial').value = (data.testimonials && data.testimonials[0]?.quote + ' – ' + data.testimonials[0]?.author) || '';
+    document.getElementById('contact-email').value = data.contact?.email || '';
+    document.getElementById('contact-phone').value = data.contact?.phone || '';
+    renderList('services', data.services || []);
+    renderList('case-studies', data.caseStudies || []);
+}
 
-        // Load data from localStorage or use default
-        function loadData() {
-            const data = JSON.parse(localStorage.getItem('acmePageData')) || defaultData;
-            document.getElementById('about').value = data.about;
-            document.getElementById('expertise').value = data.expertise;
-            document.getElementById('technologies').value = data.technologies;
-            document.getElementById('testimonial').value = data.testimonial;
-            document.getElementById('contact-email').value = data.contactEmail;
-            document.getElementById('contact-phone').value = data.contactPhone;
-            renderList('services', data.services);
-            renderList('case-studies', data.caseStudies);
+async function saveData(e) {
+    e.preventDefault();
+    const services = Array.from(document.querySelectorAll('#services-list input')).map(i => i.value.trim()).filter(Boolean);
+    const caseStudies = Array.from(document.querySelectorAll('#case-studies-list input')).map(i => i.value.trim()).filter(Boolean);
+    const testimonialText = document.getElementById('testimonial').value.trim();
+    let quote = testimonialText, author = '';
+    if (testimonialText.includes('–')) {
+        [quote, author] = testimonialText.split('–').map(s => s.trim());
+    }
+    const data = {
+        about: document.getElementById('about').value.trim(),
+        services,
+        expertise: document.getElementById('expertise').value.trim(),
+        caseStudies,
+        technologies: document.getElementById('technologies').value.trim(),
+        testimonials: [{ quote, author }],
+        contact: {
+            email: document.getElementById('contact-email').value.trim(),
+            phone: document.getElementById('contact-phone').value.trim()
         }
+    };
+    const res = await fetch('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    if (res.ok) alert('Changes saved!');
+    else alert('Failed to save changes.');
+}
 
-        // Render editable list
-        function renderList(type, items) {
-            const container = document.getElementById(type + '-list');
-            container.innerHTML = '';
-            items.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'list-edit';
-                div.innerHTML = `
-                    <input type="text" value="${item.replace(/"/g, '&quot;')}" data-idx="${idx}" />
-                    <button type="button" onclick="removeListItem('${type}', ${idx})">Remove</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Add new list item
-        function addListItem(type) {
-            const container = document.getElementById(type + '-list');
-            const idx = container.children.length;
-            const div = document.createElement('div');
-            div.className = 'list-edit';
-            div.innerHTML = `
-                <input type="text" value="" data-idx="${idx}" />
-                <button type="button" onclick="removeListItem('${type}', ${idx})">Remove</button>
-            `;
-            container.appendChild(div);
-        }
-
-        // Remove list item
-        function removeListItem(type, idx) {
-            const container = document.getElementById(type + '-list');
-            container.removeChild(container.children[idx]);
-            // Re-index remaining items
-            Array.from(container.children).forEach((div, i) => {
-                div.querySelector('input').setAttribute('data-idx', i);
-                div.querySelector('button').setAttribute('onclick', `removeListItem('${type}', ${i})`);
-            });
-        }
-
-        // Gather form data
-        function gatherData() {
-            const services = Array.from(document.querySelectorAll('#services-list input')).map(i => i.value.trim()).filter(Boolean);
-            const caseStudies = Array.from(document.querySelectorAll('#case-studies-list input')).map(i => i.value.trim()).filter(Boolean);
-            return {
-                about: document.getElementById('about').value.trim(),
-                services,
-                expertise: document.getElementById('expertise').value.trim(),
-                caseStudies,
-                technologies: document.getElementById('technologies').value.trim(),
-                testimonial: document.getElementById('testimonial').value.trim(),
-                contactEmail: document.getElementById('contact-email').value.trim(),
-                contactPhone: document.getElementById('contact-phone').value.trim()
-            };
-        }
-
-        // Save data to localStorage
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const data = gatherData();
-            localStorage.setItem('acmePageData', JSON.stringify(data));
-            alert('Changes saved! Open the main page to see updates.');
-        });
-
-        // On load
-        loadData();
-    </script>
+document.getElementById('editForm').addEventListener('submit', saveData);
+loadData();
+</script>
 </body>
 </html>
